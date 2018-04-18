@@ -31,7 +31,6 @@ class EddBkCqrsModule extends AbstractBaseModule
         $this->_initModule($key, $dependencies, $configFactory, $containerFactory, $compContainerFactory);
     }
 
-
     /**
      * {@inheritdoc}
      *
