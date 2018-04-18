@@ -41,7 +41,7 @@ class EddBkCqrsModule extends AbstractBaseModule
     public function setup()
     {
         return $this->_setupContainer(
-            $this->_loadPhpConfigFile(RC_WP_BOOKINGS_CQRS_MODULE_CONFIG_FILE),
+            $this->_loadPhpConfigFile(RC_EDDBK_CQRS_MODULE_CONFIG_FILE),
             []
         );
     }
