@@ -12,3 +12,5 @@
  * @since [*next-version*]
  */
 $cfg['cqrs']['table_prefix'] = '${wpdb_prefix}eddbk_';
+
+return $cfg;
