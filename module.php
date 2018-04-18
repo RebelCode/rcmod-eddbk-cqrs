@@ -12,8 +12,8 @@ return function (ContainerInterface $c) {
     return new EddBkCqrsModule(
         RC_EDDBK_CQRS_MODULE_KEY,
         ['wp_bookings_cqrs'],
-        $c->get('container_factory'),
         $c->get('config_factory'),
+        $c->get('container_factory'),
         $c->get('composite_container_factory')
     );
 };
