@@ -42,7 +42,14 @@ class EddBkCqrsModule extends AbstractBaseModule
     {
         return $this->_setupContainer(
             $this->_loadPhpConfigFile(RC_EDDBK_CQRS_MODULE_CONFIG_FILE),
-            []
+            [
+                'eddbk_migrator' => function (ContainerInterface $c) {
+                    return new WpdbMigrator(
+                        $c->get('wpdb'),
+                        RC_EDDBK_CQRS_MODULE_MIGRATIONS_DIR
+                    );
+                }
+            ]
         );
     }
 
