@@ -1,4 +1,4 @@
-create table wp_eddbk_booking_status_logs
+create table ${table_prefix}booking_status_logs
 (
 	id bigint auto_increment
 		primary key,
@@ -9,7 +9,7 @@ create table wp_eddbk_booking_status_logs
 )
 ;
 
-create table wp_eddbk_bookings
+create table ${table_prefix}bookings
 (
 	id bigint auto_increment
 		primary key,
@@ -25,7 +25,7 @@ create table wp_eddbk_bookings
 )
 ;
 
-create table wp_eddbk_session_rules
+create table ${table_prefix}session_rules
 (
 	id bigint auto_increment
 		primary key,
@@ -45,7 +45,7 @@ create table wp_eddbk_session_rules
 )
 ;
 
-create table wp_eddbk_sessions
+create table ${table_prefix}sessions
 (
 	id int auto_increment
 		primary key,
