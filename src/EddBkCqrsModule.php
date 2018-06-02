@@ -14,6 +14,20 @@ use RebelCode\Modular\Module\AbstractBaseModule;
 class EddBkCqrsModule extends AbstractBaseModule
 {
     /**
+     * The module version.
+     *
+     * @since [*next-version*]
+     */
+    const MODULE_VERSION = '0.1';
+
+    /**
+     * The database version.
+     *
+     * @since [*next-version*]
+     */
+    const DB_VERSION = 1;
+
+    /**
      * Constructor.
      *
      * @since [*next-version*]
@@ -54,7 +68,8 @@ class EddBkCqrsModule extends AbstractBaseModule
                 'eddbk_migrator' => function (ContainerInterface $c) {
                     return new WpdbMigrator(
                         $c->get('wpdb'),
-                        RC_EDDBK_CQRS_MODULE_MIGRATIONS_DIR
+                        RC_EDDBK_CQRS_MODULE_MIGRATIONS_DIR,
+                        \get_option($c->get('eddbk_migrations/db_version_option_name'))
                     );
                 }
             ]
@@ -68,5 +83,9 @@ class EddBkCqrsModule extends AbstractBaseModule
      */
     public function run(ContainerInterface $c = null)
     {
+        // Handler to migrate to the latest DB version
+        $this->_attach('init', function () use ($c) {
+            $c->get('eddbk_migrator')->migrate(static::DB_VERSION);
+        });
     }
 }
