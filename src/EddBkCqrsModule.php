@@ -69,7 +69,7 @@ class EddBkCqrsModule extends AbstractBaseModule
                     return new WpdbMigrator(
                         $c->get('wpdb'),
                         RC_EDDBK_CQRS_MODULE_MIGRATIONS_DIR,
-                        \get_option($c->get('eddbk_migrations/db_version_option_name'))
+                        \get_option($c->get('migrations/db_version_option_name'))
                     );
                 }
             ]
