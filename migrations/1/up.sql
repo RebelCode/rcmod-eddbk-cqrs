@@ -1,15 +1,4 @@
-create table ${table_prefix}booking_status_logs
-(
-	id bigint auto_increment
-		primary key,
-	booking_id bigint not null,
-	status varchar(30) not null,
-	user_id bigint null,
-	date timestamp default CURRENT_TIMESTAMP not null
-)
-;
-
-create table ${table_prefix}bookings
+create table if not exists ${table_prefix}bookings
 (
 	id bigint auto_increment
 		primary key,
@@ -20,18 +9,17 @@ create table ${table_prefix}bookings
 	payment_id bigint null,
 	client_id bigint null,
 	client_tz varchar(100) null,
-	admin_notes text null,
+	admin_notes longtext null,
 	status varchar(20) not null
-)
-;
+);
 
-create table ${table_prefix}session_rules
+create table if not exists ${table_prefix}session_rules
 (
 	id bigint auto_increment
 		primary key,
 	service_id bigint not null,
 	start int not null,
-	end int null,
+	end int not null,
 	all_day tinyint(1) default '0' null,
 	`repeat` tinyint(1) default '0' null,
 	repeat_period int null,
@@ -42,10 +30,9 @@ create table ${table_prefix}session_rules
 	repeat_weekly_on varchar(70) null,
 	repeat_monthly_on enum('dotw', 'dotm') null,
 	exclude_dates longtext null
-)
-;
+);
 
-create table ${table_prefix}sessions
+create table if not exists ${table_prefix}sessions
 (
 	id int auto_increment
 		primary key,
@@ -54,5 +41,4 @@ create table ${table_prefix}sessions
 	service_id int not null,
 	resource_id int not null,
 	rule_id int not null
-)
-;
+);
