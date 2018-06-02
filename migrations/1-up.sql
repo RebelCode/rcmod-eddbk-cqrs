@@ -1,4 +1,4 @@
-create table if not exists ${table_prefix}bookings
+create table ${cqrs/bookings/table}
 (
 	id bigint auto_increment
 		primary key,
@@ -13,7 +13,7 @@ create table if not exists ${table_prefix}bookings
 	status varchar(20) not null
 );
 
-create table if not exists ${table_prefix}session_rules
+create table ${cqrs/session_rules/table}
 (
 	id bigint auto_increment
 		primary key,
@@ -32,7 +32,7 @@ create table if not exists ${table_prefix}session_rules
 	exclude_dates longtext null
 );
 
-create table if not exists ${table_prefix}sessions
+create table ${cqrs/sessions/table}
 (
 	id int auto_increment
 		primary key,
