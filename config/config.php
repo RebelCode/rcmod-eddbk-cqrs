@@ -6,11 +6,13 @@
  * @since [*next-version*]
  */
 
-/*
- * Modifies the table prefix to also include a plugin-specific prefix.
- *
- * @since [*next-version*]
- */
-$cfg['cqrs']['table_prefix'] = '${wpdb_prefix}eddbk_';
-
-return $cfg;
+return [
+    'cqrs' => [
+        /*
+         * Modifies the table prefix to also include a plugin-specific prefix.
+         *
+         * @since [*next-version*]
+         */
+        'table_prefix' => '${wpdb_prefix}eddbk_'
+    ]
+];
