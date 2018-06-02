@@ -9,7 +9,6 @@ use Dhii\I18n\StringTranslatingTrait;
 use Dhii\Util\Normalization\NormalizeIntCapableTrait;
 use Dhii\Util\Normalization\NormalizeStringCapableTrait;
 use Dhii\Util\String\StringableInterface as Stringable;
-use Exception;
 use InvalidArgumentException;
 use mysqli;
 use RuntimeException;
@@ -208,7 +207,7 @@ class Migrator
         $directory = $this->_getMigrationsDir();
 
         foreach ($migrations as $_version) {
-            $_path = implode(DIRECTORY_SEPARATOR, [$directory, $_version, $filename]);
+            $_path = implode(DIRECTORY_SEPARATOR, [$directory, sprintf('%1$s-%2$s', $_version, $filename)]);
 
             $this->_runMigrationFile($_path);
         }
