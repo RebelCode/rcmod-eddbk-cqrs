@@ -11,24 +11,16 @@ use Dhii\Util\Normalization\NormalizeStringCapableTrait;
 use Dhii\Util\String\StringableInterface as Stringable;
 use Exception;
 use InvalidArgumentException;
-use RebelCode\Storage\Resource\WordPress\Wpdb\ExecuteWpdbQueryCapableTrait;
-use RebelCode\Storage\Resource\WordPress\Wpdb\WpdbAwareTrait;
+use mysqli;
 use RuntimeException;
-use wpdb;
 
 /**
  * Performs database migrations through WPDB.
  *
  * @since [*next-version*]
  */
-class WpdbMigrator
+class Migrator
 {
-    /* @since [*next-version*] */
-    use WpdbAwareTrait;
-
-    /* @since [*next-version*] */
-    use ExecuteWpdbQueryCapableTrait;
-
     /* @since [*next-version*] */
     use NormalizeIntCapableTrait;
 
@@ -80,19 +72,58 @@ class WpdbMigrator
     protected $dbVersion;
 
     /**
+     * The mysqli handle.
+     *
+     * @since [*next-version*]
+     *
+     * @var mysqli
+     */
+    protected $mysqli;
+
+    /**
      * Constructor.
      *
      * @since [*next-version*]
      *
-     * @param wpdb                  $wpdb          The WPDB instance.
+     * @param mysqli                $mysqli        The mysqli handle.
      * @param string|Stringable     $migrationsDir The migrations directory path.
      * @param int|string|Stringable $dbVersion     The current database version.
      */
-    public function __construct($wpdb, $migrationsDir, $dbVersion)
+    public function __construct($mysqli, $migrationsDir, $dbVersion)
     {
-        $this->_setWpdb($wpdb);
+        $this->mysqli = $mysqli;
         $this->_setMigrationsDir($migrationsDir);
         $this->_setDbVersion($dbVersion);
+    }
+
+    /**
+     * Retrieves the mysqli handle.
+     *
+     * @since [*next-version*]
+     *
+     * @return mysqli The mysqli handle.
+     */
+    protected function _getMysqli()
+    {
+        return $this->mysqli;
+    }
+
+    /**
+     * Sets the mysqli handle.
+     *
+     * @since [*next-version*]
+     *
+     * @param mysqli $mysqli The mysqli handle.
+     */
+    protected function _setMysqli($mysqli)
+    {
+        if (!($mysqli instanceof mysqli)) {
+            throw $this->_createInvalidArgumentException(
+                $this->__('Argument is not a mysqli handle'), null, null, $mysqli
+            );
+        }
+
+        $this->mysqli = $mysqli;
     }
 
     /**
@@ -179,13 +210,7 @@ class WpdbMigrator
         foreach ($migrations as $_version) {
             $_path = implode(DIRECTORY_SEPARATOR, [$directory, $_version, $filename]);
 
-            try {
-                $this->_runMigrationFile($_path);
-            } catch (RuntimeException $exception) {
-                throw $this->_createRuntimeException(
-                    $this->__('Failed to migration to target "%s"', [$target]), null, $exception
-                );
-            }
+            $this->_runMigrationFile($_path);
         }
     }
 
@@ -196,16 +221,17 @@ class WpdbMigrator
      *
      * @param string|Stringable $filePath The path to the migration file.
      *
-     * @throws RuntimeException If failed to run the migration.
+     * @throws RuntimeException If failed to read the migration file or if the migration failed to execute.
      */
     protected function _runMigrationFile($filePath)
     {
-        try {
-            $sql = $this->_readSqlMigrationFile($filePath);
+        $mysqli   = $this->_getMysqli();
+        $sqlQuery = $this->_readSqlMigrationFile($filePath);
+        $sqlQuery = str_replace('${table_prefix}', 'wp_eddbk_', $sqlQuery);
+        $success  = $mysqli->multi_query($sqlQuery);
 
-            $this->_getWpdb()->query($sql);
-        } catch (Exception $exception) {
-            throw $this->_createRuntimeException($this->__('Failed to run migration"'), null, $exception);
+        if (!$success) {
+            throw $this->_createRuntimeException($mysqli->error);
         }
     }
 

@@ -7,6 +7,8 @@ use Dhii\Data\Container\ContainerFactoryInterface;
 use Dhii\Event\EventFactoryInterface;
 use Dhii\Exception\InternalException;
 use Dhii\Util\String\StringableInterface as Stringable;
+use Exception;
+use mysqli;
 use Psr\Container\ContainerInterface;
 use Psr\EventManager\EventManagerInterface;
 use RebelCode\Modular\Module\AbstractBaseModule;
@@ -65,13 +67,16 @@ class EddBkCqrsModule extends AbstractBaseModule
         return $this->_setupContainer(
             $this->_loadPhpConfigFile(RC_EDDBK_CQRS_MODULE_CONFIG_FILE),
             [
+                'eddbk_mysqli'   => function (ContainerInterface $c) {
+                    return new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+                },
                 'eddbk_migrator' => function (ContainerInterface $c) {
-                    return new WpdbMigrator(
-                        $c->get('wpdb'),
+                    return new Migrator(
+                        $c->get('eddbk_mysqli'),
                         RC_EDDBK_CQRS_MODULE_MIGRATIONS_DIR,
-                        \get_option($c->get('migrations/db_version_option_name'))
+                        \get_option($c->get('migrations/db_version_option_name'), 0)
                     );
-                }
+                },
             ]
         );
     }
@@ -85,7 +90,15 @@ class EddBkCqrsModule extends AbstractBaseModule
     {
         // Handler to migrate to the latest DB version
         $this->_attach('init', function () use ($c) {
-            $c->get('eddbk_migrator')->migrate(static::DB_VERSION);
+            $target   = static::DB_VERSION;
+            $migrator = $c->get('eddbk_migrator');
+
+            try {
+                // Migrate
+                $migrator->migrate($target);
+                // Update DB version on success
+                \update_option($c->get('migrations/db_version_option_name'), $target);
+            } catch (Exception $exception) {}
         });
     }
 }
