@@ -13,6 +13,15 @@ return [
          *
          * @since [*next-version*]
          */
-        'table_prefix' => '${wpdb_prefix}eddbk_'
+        'table_prefix' => '${wpdb_prefix}eddbk_',
+    ],
+
+    'migrations' => [
+        /**
+         * The name of the WP Option where the current database version is stored.
+         *
+         * @since [*next-version*]
+         */
+        'db_version_option_name' => 'eddbk_db_version',
     ]
 ];
