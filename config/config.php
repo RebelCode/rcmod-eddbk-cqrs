@@ -16,12 +16,19 @@ return [
         'table_prefix' => '${wpdb_prefix}eddbk_',
     ],
 
-    'migrations' => [
-        /**
-         * The name of the WP Option where the current database version is stored.
-         *
-         * @since [*next-version*]
-         */
-        'db_version_option_name' => 'eddbk_db_version',
+    /*
+     * Override some generic wp_bookings config.
+     *
+     * @since [*next-version*]
+     */
+    'wp_bookings_cqrs' => [
+        'migrations' => [
+            /*
+             * Override the generic DB version option name to be specific to EDD Bookings.
+             *
+             * @since [*next-version*]
+             */
+            'db_version_option' => 'eddbk_bookings_db_version'
+        ]
     ]
 ];
