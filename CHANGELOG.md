@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [[*next-version*]] - YYYY-MM-DD
 ### Changed
-- Now compatible with `rebelcode/wp-cqrs-resource-models` version `0.2-alpha1` or later.
+- Now compatible with `rebelcode/wp-cqrs-resource-models` version `0.2`.
 
 ## [0.1-alpha2] - 2018-06-05
 ### Added
